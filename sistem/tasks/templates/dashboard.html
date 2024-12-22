@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">Bienvenido, {{ user.username }}</h1>
+
+    <div class="container">
+        <div class="row row-cols-auto">
+            {% for task in tasks %}
+            <div class="col">
+                <div class="card" style="width: 25rem;">
+                    <img src="{{ task.image_frontpage.url }}" class="card-img-top" alt="Imagen de la tarea">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ task.title }}</h5>
+                        <p class="card-text">{{ task.subtitle }}</p>
+                        <a href="{% url 'task' task.id %}" class="btn btn-primary">Leer detalles</a>
+                        <form method="POST" action="{% url 'task_delete' task.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

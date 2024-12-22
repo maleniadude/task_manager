@@ -1,0 +1,26 @@
+{% extends 'main.html'%}
+
+<h2> task page</h2>
+
+{% block content %}
+
+<h1>{{task.title}}</h1>
+
+<h3>{{task.subtitle}}</h3>
+<div class="container">
+    <img class="img-thumbnail" src="{{post.image_frontpage.url}}">
+    <br> 
+    <h6>{{task.description}}</h6>
+    
+    <h7> contenido:</h7>
+
+    <p>{{task.content}}</p>
+    <br> 
+
+    <div class="container">
+        <p>{{task.usuario}}</p>
+        <p>{{task.post_date}}</p>
+    </div>
+  
+</div>
+{% endblock content%}

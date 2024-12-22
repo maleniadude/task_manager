@@ -1,0 +1,67 @@
+{% extends 'main.html' %}
+
+{% block title %}Crear/Editar Tarea{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body class="bg-dark">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>{% if task %}Editar Tarea{% else %}Crear Tarea{% endif %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% if task %}{% url 'task_update' task.id %}{% else %}{% url 'task_create' %}{% endif %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Título</label>
+                                <input type="text" id="title" name="title" class="form-control" 
+                                       value="{{ task.title|default:'' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea id="description" name="description" class="form-control">{{ task.description|default:'' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fecha_ven" class="form-label">Fecha de Vencimiento</label>
+                                <input type="date" id="fecha_ven" name="fecha_ven" class="form-control" 
+                                       value="{{ task.fecha_ven|default:'' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select id="estado" name="estado" class="form-control" required>
+                                    <option value="Pendiente" {% if task.estado == "Pendiente" %}selected{% endif %}>Pendiente</option>
+                                    <option value="En Proceso" {% if task.estado == "En Proceso" %}selected{% endif %}>En Proceso</option>
+                                    <option value="Completada" {% if task.estado == "Completada" %}selected{% endif %}>Completada</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categorys" class="form-label">Categorías</label>
+                                <select id="categorys" name="categorys" class="form-control" multiple>
+                                    {% for category in categorys %}
+                                    <option value="{{ category.id }}" 
+                                            {% if task and category in task.category.all %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">Presione Ctrl o Cmd para seleccionar múltiples categorías.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
