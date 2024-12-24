@@ -3,65 +3,49 @@
 {% block title %}Mis Tareas{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tareas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-</head>
-<body class="bg-dark">
-    <nav class="navbar navbar-expand-lg navbar-light bg-primary text-white">
-    </nav>
-    <div class="container py-4">
-        <h1 class="mb-4 text-center">Tus Tareas</h1>
+<div class="container py-4">
+    <h1 class="mb-4 text-center">Tus Tareas</h1>
 
-        <div class="mb-3">
-            <a href="{% url 'task_create' %}" class="btn btn-success">Crear Nueva Tarea</a>
+    <div class="mb-3">
+        <a href="{% url 'task_create' %}" class="btn btn-success">Crear Nueva Tarea</a>
+    </div>
+
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-auto">
+            <input type="text" name="q" class="form-control" placeholder="Buscar tareas">
         </div>
-
-        <form method="get">
-            <input type="text" name="q" placeholder="Buscar tareas">
-            <select name="category">
+        <div class="col-auto">
+            <select name="category" class="form-select">
                 <option value="">Todas las categorías</option>
-                {% for category in category %}
+                {% for category in categories %}
                     <option value="{{ category.id }}">{{ category.name }}</option>
                 {% endfor %}
             </select>
-            <button type="submit">Filtrar</button>
-        </form>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
 
-        {% if tasks %}
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Descripción</th>
-                        <th>Fecha de Vencimiento</th>
-                        <th>Estado</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for task in tasks %}
-                    <tr>
-                        <td>{{ task.title }}</td>
-                        <td>{{ task.descripcion|truncatechars:50 }}</td>
-                        <td>{{ task.fecha_ven }}</td>
-                        <td>{{ task.get_estado_display }}</td>
-                        <td>
-                            <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="text-center">No tienes tareas registradas.</p>
-        {% endif %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for task in object_list %}
+            <div class="col">
+                <div class="card">
+                    {% if task.image_frontpage %}
+                        <img src="{{ task.image_frontpage.url }}" class="card-img-top" alt="Imagen de la tarea" class="image-small">
+                    {% else %}
+                        <img src="/static/image_default.png" class="card-img-top" alt="Imagen predeterminada">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ task.title }}</h5>
+                        <p class="card-text">{{ task.subtitle }}</p>
+                        <a href="{% url 'task' task.id %}" class="btn btn-primary">Leer detalles</a>
+                        <a href="{% url 'task_delete' task.id %}" class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-</body>
-</html>
+
+</div>
 {% endblock %}

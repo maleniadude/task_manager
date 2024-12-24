@@ -31,7 +31,7 @@ class Task(models.Model):
     category = models.ManyToManyField(Category, blank=True)
     post_date = models.DateTimeField(default=now)
     update = models.DateTimeField(default=now)
-    image_frontpage = models.ImageField(null=True, blank=True, default="")
+    image_frontpage = models.ImageField(null=True, blank=True, default="image_default.jpg")
 
     def __str__(self):
         return self.title

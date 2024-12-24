@@ -1,0 +1,5 @@
+.image-small {
+    max-width: 1000px;
+    max-height: 1000px;
+    object-fit: cover;
+}

@@ -1,10 +1,10 @@
 from django.views.generic.base import TemplateView
 from datetime import date, timedelta
 from django.shortcuts import redirect, render
+from .forms import TaskForm
 from tasks.models import Category, Task
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
@@ -48,30 +48,15 @@ class Dashboard(LoginRequiredMixin, TemplateView):
         )
         return context
 
-class TaskCreate(LoginRequiredMixin, CreateView, ModelForm):
+class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
-    fields = '__all__'
+    form_class = TaskForm
     template_name = 'task_form.html'
     success_url = '/tasks/'
 
-    def task_valid(request, self):
-        if request.method == 'POST':
-            title = request.POST.get('title')
-            description = request.POST.get('description')
-            fecha_ven = request.POST.get('fecha_ven')
-            estado = request.POST.get('estado')
-            category_ids = request.POST.getlist('categorys')
-
-            task = Task.objects.create(
-                title=title,
-                description=description,
-                fecha_ven=fecha_ven,
-                estado=estado,
-                usuario=request.user
-            )
-            task.category.set(category_ids)
-
-        categorys = Category.objects.all() 
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        return super().form_valid(form)
   
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -79,16 +64,17 @@ class TaskListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = Task.objects.filter(usuario=self.request.user)
-        category = self.request.GET.get('category')
-        search_query = self.request.GET.get('q')
 
+        category = self.request.GET.get('category')
         if category:
             queryset = queryset.filter(categorys__id=category)
+
+        search_query = self.request.GET.get('q')
         if search_query:
             queryset = queryset.filter(titulo__icontains=search_query)
-        
+
         return queryset
-    
+        
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'task.html'
@@ -102,7 +88,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     fields = '__all__'
-    template_name = 'task_form.html'
+    template_name = 'task_update.html'
     def edit(request, task_id):
         task = Task.objects.get(id=task_id)
 
@@ -111,13 +97,13 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             task.description = request.POST.get('description')
             task.fecha_ven = request.POST.get('fecha_ven')
             task.estado = request.POST.get('estado')
-            category_ids = request.POST.getlist('categorys')
+            category_ids = request.POST.getlist('categories')
 
             task.category.set(category_ids)
             task.save()
             return redirect('dashboard')
 
-        categorys = Category.objects.all()
+        categories = Category.objects.all()
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
