@@ -4,26 +4,57 @@
 
 {% block content %}
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary text-white"></nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{}"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'task_update' task.pk %}">Editar</a>
+            </li>
+            </li>
+            </ul>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'task_delete' task.pk %}">Eliminar</a>
+            </li>
+            </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container py-4">
 
     <h1 class="mb-4 text-center">{{task.title}}</h1>
 
-    <h3>{{task.subtitle}}</h3>
-    <div class="container">
-        <img class="img-thumbnail" src="{{task.image_frontpage.url}}">
-        <br> 
-        <h6>{{task.description}}</h6>
-        
-        <h7> contenido:</h7>
+    <h3 class="mb-4 text-center">{{task.subtitle}}</h3>
 
+    <div style="display: grid; place-items: center; height: 100vh;">
+        <img class="img-thumbnail" src="{{task.image_frontpage.url}}">
+    </div>
+    <div class="container">
+
+        <h6> descripcion:</h6>
+        <h7 class="mb-4 text-center"> {{task.description}}</h7>
+        <br>
+        <h6> contenido:</h6>
         <p>{{task.content}}</p>
         <br> 
-
         <div class="container">
-            <p>{{task.usuario}}</p>
-            <p>{{task.post_date}}</p>
+            <br> 
+            <p>fecha de creacion: {{task.post_date}}</p>
+            <p>actualizacion: {{task.update}}</p>
+            <p>fecha de vencimiento: {{task.fecha_ven}}</p>
         </div>
-    
+
     </div>
 </div>
 {% endblock content%}

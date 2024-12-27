@@ -5,25 +5,30 @@
 {% block content %}
 <div class="container py-4">
     <h1 class="mb-4 text-center">Tus Tareas</h1>
+    <hr>
 
     <div class="mb-3">
         <a href="{% url 'task_create' %}" class="btn btn-success">Crear Nueva Tarea</a>
     </div>
 
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-auto">
-            <input type="text" name="q" class="form-control" placeholder="Buscar tareas">
-        </div>
-        <div class="col-auto">
-            <select name="category" class="form-select">
-                <option value="">Todas las categorías</option>
-                {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+    <form method="get" action="{% url 'task_list' %}">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" name="q" class="form-control" placeholder="Buscar tareas..." value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
         </div>
     </form>
 

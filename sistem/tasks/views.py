@@ -1,6 +1,6 @@
 from django.views.generic.base import TemplateView
-from datetime import date, timedelta
-from django.shortcuts import redirect, render
+from django.utils.timezone import now, timedelta
+from django.db.models import Q
 from .forms import TaskForm
 from tasks.models import Category, Task
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -10,7 +10,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.http import Http404
-
 
 class RegisterView(CreateView):
     model = User
@@ -32,20 +31,38 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('dashboard')
+    
+class CustomLogoutView(LoginView):
+    template_name = 'Registration/logout.html'
 
-class Dashboard(LoginRequiredMixin, TemplateView):
+    def get_success_url(self):
+        return reverse_lazy('login')
+
+class DashboardView(TemplateView):
     template_name = 'dashboard.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_tasks = Task.objects.filter(usuario=self.request.user)
-        context['total_tareas'] = user_tasks.count()
-        context['pendientes'] = user_tasks.filter(estado='P').count()
-        context['en_proceso'] = user_tasks.filter(estado='E').count()
-        context['completadas'] = user_tasks.filter(estado='C').count()
-        context['proximas_vencer'] = user_tasks.filter(
-            fecha_ven__range=[date.today(), date.today() + timedelta(days=3)]
+        user = self.request.user
+
+        user_tasks = Task.objects.filter(usuario=user)
+        context['total_tasks'] = user_tasks.count()
+
+        context['pending_tasks'] = user_tasks.filter(estado='pending_tasks')
+        context['pending_tasks_count'] = context['pending_tasks'].count()
+
+        context['in_progress_tasks'] = user_tasks.filter(estado='in_progress_tasks')
+        context['in_progress_tasks_count'] = context['in_progress_tasks'].count()
+
+        context['completed_tasks'] = user_tasks.filter(estado='completed_tasks')
+        context['completed_tasks_count'] = context['completed_tasks'].count()
+
+        upcoming_deadline = now() + timedelta(days=3)
+        context['upcoming_tasks'] = user_tasks.filter(
+            fecha_ven__lte=upcoming_deadline, 
+            fecha_ven__gte=now()
         )
+        context['upcoming_tasks_count'] = context['upcoming_tasks'].count()
         return context
 
 class TaskCreate(LoginRequiredMixin, CreateView):
@@ -63,17 +80,30 @@ class TaskListView(LoginRequiredMixin, ListView):
     template_name = 'task_list.html'
 
     def get_queryset(self):
-        queryset = Task.objects.filter(usuario=self.request.user)
+        user = self.request.user
 
-        category = self.request.GET.get('category')
-        if category:
-            queryset = queryset.filter(categorys__id=category)
+        category_filter = self.request.GET.get('category', None)
+        search_query = self.request.GET.get('q', '')
 
-        search_query = self.request.GET.get('q')
+        queryset = Task.objects.filter(usuario=user)
+
         if search_query:
-            queryset = queryset.filter(titulo__icontains=search_query)
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | 
+                Q(description__icontains=search_query)
+            )
+        
+        if category_filter:
+            queryset = queryset.filter(category=category_filter)
 
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['search_query'] = self.request.GET.get('q', '')
+        context['selected_category'] = self.request.GET.get('category', None)
+        return context
         
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
@@ -87,23 +117,13 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = '__all__'
+    form_class = TaskForm
     template_name = 'task_update.html'
-    def edit(request, task_id):
-        task = Task.objects.get(id=task_id)
-
-        if request.method == 'POST':
-            task.title = request.POST.get('title')
-            task.description = request.POST.get('description')
-            task.fecha_ven = request.POST.get('fecha_ven')
-            task.estado = request.POST.get('estado')
-            category_ids = request.POST.getlist('categories')
-
-            task.category.set(category_ids)
-            task.save()
-            return redirect('dashboard')
-
-        categories = Category.objects.all()
+    success_url = '/tasks/'
+    
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        return super().form_valid(form)
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task

@@ -3,18 +3,23 @@
 {% block title %}Logout{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">¿Estás seguro de que quieres cerrar sesión?</h5>
-                    <p class="card-text">Tu sesión será cerrada y regresarás a la página de inicio.</p>
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
-                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
-                    </form>
+<body class="bg-dark">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h4>cierre de sesion</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">¿Estás seguro de que quieres cerrar sesión?</h5>
+                        <p class="card-text">Tu sesión será cerrada y regresarás a la página de inicio.</p>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+                        <form action="{% url 'login' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

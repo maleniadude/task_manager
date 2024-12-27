@@ -14,18 +14,17 @@ class Category(models.Model):
 
 class Task(models.Model):
     STATUS_CHOICES = [
-        ('PENDING', 'Pendiente'),
-        ('IN_PROGRESS', 'En Progreso'),
-        ('COMPLETED', 'Completada'),
+        ('pending_tasks', 'Pendiente'),
+        ('in_progress_tasks', 'En Progreso'),
+        ('completed_tasks', 'Completada'),
     ]
 
     title = models.CharField(max_length=200, default="")
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    estado = models.CharField( max_length=12, choices=STATUS_CHOICES, default='PENDING')
+    estado = models.CharField( max_length=50, choices=STATUS_CHOICES, default='pending_tasks')
     fecha_ven = models.DateField(blank=True, null=True)
-    completed = models.BooleanField(default=False)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     category = models.ManyToManyField(Category, blank=True)
