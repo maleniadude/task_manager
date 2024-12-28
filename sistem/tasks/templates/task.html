@@ -1,7 +1,5 @@
 {% extends 'main.html'%}
 
-<h2> task page</h2>
-
 {% block content %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary text-white"></nav>
@@ -32,29 +30,32 @@
 </nav>
 
 <div class="container py-4">
+    <hr>
+    <h1 class="mb-4 text-center">{{ task.title }}</h1>
+    <h2 class="mb-4 text-center">{{ task.subtitle }}</h2>
+    <hr>
 
-    <h1 class="mb-4 text-center">{{task.title}}</h1>
-
-    <h3 class="mb-4 text-center">{{task.subtitle}}</h3>
-
-    <div style="display: grid; place-items: center; height: 100vh;">
-        <img class="img-thumbnail" src="{{task.image_frontpage.url}}">
-    </div>
-    <div class="container">
-
-        <h6> descripcion:</h6>
-        <h7 class="mb-4 text-center"> {{task.description}}</h7>
-        <br>
-        <h6> contenido:</h6>
-        <p>{{task.content}}</p>
-        <br> 
-        <div class="container">
-            <br> 
-            <p>fecha de creacion: {{task.post_date}}</p>
-            <p>actualizacion: {{task.update}}</p>
-            <p>fecha de vencimiento: {{task.fecha_ven}}</p>
+    <div class="container py-5">
+        <div style="display: grid; place-items: center; overflow: hidden;">
+            <img class="img-thumbnail" src="{{ task.image_frontpage.url }}" alt="Imagen de portada" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
 
+        <hr>
+        <br>
+        <h6>Descripción:</h6>
+        <h7 class="mb-4 text-center">{{ task.description }}</h7>
+        <br>
+        <h6>Contenido:</h6>
+        <h7 class="mb-4 text-center">{{ task.content }}</h7>
+
+        <div class="container">
+            <br>
+            <hr>
+            <p>Fecha de creación: {{ task.post_date }}</p>
+            <p>Actualización: {{ task.update }}</p>
+            <hr>
+            <p>Fecha de vencimiento: {{ task.fecha_ven }}</p>
+        </div>
     </div>
 </div>
 {% endblock content%}

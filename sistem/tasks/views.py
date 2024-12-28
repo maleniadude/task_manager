@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.http import Http404
 
+#Vistas creadas para el registro, el login y el logout de usuarios.
 class RegisterView(CreateView):
     model = User
     form_class = UserCreationForm
@@ -37,7 +38,8 @@ class CustomLogoutView(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('login')
-
+    
+#vista para el dashboard, para la lista de tareas y cada tarea detallada.
 class DashboardView(TemplateView):
     template_name = 'dashboard.html'
 
@@ -64,16 +66,6 @@ class DashboardView(TemplateView):
         )
         context['upcoming_tasks_count'] = context['upcoming_tasks'].count()
         return context
-
-class TaskCreate(LoginRequiredMixin, CreateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'task_form.html'
-    success_url = '/tasks/'
-
-    def form_valid(self, form):
-        form.instance.usuario = self.request.user
-        return super().form_valid(form)
   
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -115,6 +107,17 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
             raise Http404("No se encontró la tarea.")
         return queryset
     
+#CRUD crear, actualizar, eliminar(aclarar que el read seria la vista TaskDetailView)
+class TaskCreate(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'task_form.html'
+    success_url = '/tasks/'
+
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        return super().form_valid(form)
+
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
