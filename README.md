@@ -1,7 +1,7 @@
 # task_manager
-    Este proyecto es el desarrollo de una aplicación web con django;
-    partiendo con el objetivo de gestionar tareas de usuarios, implementando relaciones entre modelos, autenticación y autorización, validaciones personalizadas, y manejo de vistas basadas en clases.
-    basándonos en un panel de control, una lista de tareas y un CRUD.
+Este proyecto es el desarrollo de una aplicación web con django;
+partiendo con el objetivo de gestionar tareas de usuarios, implementando relaciones entre modelos, autenticación y autorización, validaciones personalizadas, y manejo de vistas basadas en clases.
+basándonos en un panel de control, una lista de tareas y un CRUD.
 
 ## Características Principales
 
@@ -36,21 +36,21 @@
 
 4. **Instalar dependencias**:
     -necesitamos intalar django y pillow:
-        ```bash
-        pip install django
+    ```bash
+    pip install django
 
-        pip installl pillow
+    pip installl pillow
     
     -confirmamos los paquetes:
-        ```bash
-        pip freeze
+    ```bash
+    pip freeze
 
     -se tiene que ver algo asi:
-        asgiref==3.8.1
-        Django==5.1.4
-        pillow==11.0.0
-        sqlparse==0.5.3
-        tzdata==2024.2
+    - asgiref==3.8.1
+    - Django==5.1.4
+    - pillow==11.0.0
+    - sqlparse==0.5.3
+    - tzdata==2024.2
 
 5. **Asegurarnos de que no faltan migraciones por hacer**:
    ```bash
