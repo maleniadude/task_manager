@@ -42,7 +42,7 @@ basándonos en un panel de control, una lista de tareas y un CRUD.
     pip installl pillow
     
     -confirmamos los paquetes:
-    ```bash
+
     pip freeze
 
     -se tiene que ver algo asi:
