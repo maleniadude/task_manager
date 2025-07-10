@@ -1,28 +1,33 @@
 {% extends 'main.html' %}
 
-{% block title %}Logout{% endblock %}
+{% block title %}Cerrar Sesión{% endblock %}
 
 {% block content %}
-<body class="bg-dark">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header bg-danger text-white text-center">
-                        <h4>cierre de sesion</h4>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">¿Estás seguro de que quieres cerrar sesión?</h5>
-                        <p class="card-text">Tu sesión será cerrada y regresarás a la página de inicio.</p>
-                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
-                        <form action="{% url 'login' %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
-                        </form>
-                    </div>
-                </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-danger text-white text-center">
+          <h4>¿Cerrar sesión?</h4>
+        </div>
+        <div class="card-body text-center">
+          <p class="mb-3">Tu sesión será cerrada y regresarás a la página de inicio.</p>
+
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </button>
+            </form>
             </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

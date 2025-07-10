@@ -12,20 +12,26 @@ from django.contrib.auth.views import LoginView
 from django.http import Http404
 
 #Vistas creadas para el registro, el login y el logout de usuarios.
+from django.contrib.auth import login
+from django.contrib.auth import authenticate
+
 class RegisterView(CreateView):
     model = User
     form_class = UserCreationForm
     template_name = 'Registration/register.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('dashboard')  # Redireccionar al dashboard
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        user = User.objects.get(username=username)
-        from django.contrib.auth import login
-        login(self.request, user)
-        return response
+        # Guardar el usuario
+        user = form.save()
+        # Autenticar con las credenciales recién creadas
+        raw_password = form.cleaned_data.get("password1")
+        authenticated_user = authenticate(username=user.username, password=raw_password)
+        if authenticated_user is not None:
+            login(self.request, authenticated_user)
+        return super().form_valid(form)
+
+
     
 class CustomLoginView(LoginView):
     template_name = 'Registration/login.html'
@@ -40,8 +46,10 @@ class CustomLogoutView(LoginView):
         return reverse_lazy('login')
     
 #vista para el dashboard, para la lista de tareas y cada tarea detallada.
-class DashboardView(TemplateView):
+
+class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
+    login_url = reverse_lazy('login')  # Asegura redirección si no ha iniciado sesión
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,6 +74,7 @@ class DashboardView(TemplateView):
         )
         context['upcoming_tasks_count'] = context['upcoming_tasks'].count()
         return context
+
   
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task

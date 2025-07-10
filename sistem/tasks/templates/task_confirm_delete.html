@@ -1,37 +1,33 @@
 {% extends 'main.html' %}
 
+{% block title %}Confirmar Eliminación{% endblock %}
+
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmar Eliminación</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-</head>
-<body class="bg-dark">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header bg-danger text-white text-center">
-                        <h4>Confirmar Eliminación</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <p>¿Estás seguro de que deseas eliminar esta tarea?</p>
-                        <p>{{ object.title }}</p>
-                        <form method="post">
-                            {% csrf_token %}
-                            <input class="btn btn-danger" type="submit" value="Eliminar">
-                            <a href="{% url 'task' task.id %}" class="btn btn-secondary">Cancelar</a>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-danger text-white text-center">
+          <h4>¿Eliminar esta tarea?</h4>
         </div>
-    </div>
-</body>
-</html>
+        <div class="card-body text-center">
+          <p class="mb-2">¿Estás seguro de que deseas eliminar la siguiente tarea?</p>
+          <h5 class="text-danger mb-4">{{ object.title }}</h5>
 
-{% endblock %}
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+              <a href="{% url 'task' object.id %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
